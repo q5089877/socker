@@ -1,4 +1,4 @@
-name: 我的選股報表自動更新
+name: NEIL選股報表自動更新
 
 on:
   schedule:

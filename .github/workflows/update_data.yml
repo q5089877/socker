@@ -1,4 +1,4 @@
-name: 永漢的台股自動更新
+name: Neil的台股自動更新
 
 on:
   schedule:

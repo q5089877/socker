@@ -5,7 +5,7 @@ from dynamic_delay import trade
 
 # --- 1. 設定回測參數 ---
 STOCK_ID = "2330"  # 想回測的股票代碼 (例如: "2330", "2603")
-START_DATE = "2025-03-01"  # 回測開始日期
+START_DATE = "2025-05-01"  # 回測開始日期
 END_DATE = "2025-06-30"   # 回測結束日期
 
 STRATEGY_PARAMS = {

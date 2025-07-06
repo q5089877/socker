@@ -1,0 +1,40 @@
+name: 永漢的台股自動更新
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 每天 UTC 06:00 → 台灣時間 14:00
+  workflow_dispatch:     # 手動觸發
+
+jobs:
+  update-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          # 用 secrets.GITHUB_TOKEN 才有權限讀寫 Private repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Update data
+        run: python update.py
+
+      - name: Commit & push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 推送 Private repo 必備
+        run: |
+          git config user.email "<YOUR_EMAIL>"
+          git config user.name "<YOUR_GITHUB_USERNAME>"
+          git add data/*.csv
+          git commit -m "📈 自動化更新台股 5 分鐘線" -a || echo "No changes to commit"
+          git push

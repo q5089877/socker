@@ -42,4 +42,4 @@ jobs:
           git add stock_report.html
           git add data/*.csv         # 如果也要更新 data，可留
           git commit -m "📊 自動化更新選股報表" -a || echo "No changes to commit"
-          git push origin main
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main

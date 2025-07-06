@@ -36,5 +36,7 @@ jobs:
           git config user.email "<YOUR_EMAIL>"
           git config user.name "<YOUR_GITHUB_USERNAME>"
           git add data/*.csv
-          git commit -m "📈 自動化更新台股 5 分鐘線" -a || echo "No changes to commit"
+
+          # 用 GITHUB_TOKEN 做認證推回 main
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
           git push

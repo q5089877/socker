@@ -1,8 +1,11 @@
 # TW Stocker
 
-每天更新的台股歷史資料庫，計算技術指標，回測然後推薦股票。  
+每天更新的台股歷史資料庫，計算技術指標，回測然後推薦股票。
+
+url="https://q5089877.github.io/socker/stock_report.html"
 
 https://github.com/q5089877/socker/stock_report.html
+
 
 ## 使用方式，以2330為例，可以換成自己需要的股票
 
@@ -18,7 +21,7 @@ Yahoo finance，每隔5分鐘的六十天內資料，會用github action持續�
 
 ## 抽取技術指標
 1. `pip install fta`
-2. 
+2.
 ```python
 import pandas as pd
 import fta
@@ -31,8 +34,8 @@ print(df_full)
 ```
 
 ## 模擬交易
-1. git clone this project  
-2. 參考`strategy/dynamic_delay`作為我們交易的策略  
+1. git clone this project
+2. 參考`strategy/dynamic_delay`作為我們交易的策略
 ```python
 import pandas as pd
 import fta

@@ -57,7 +57,8 @@ def get_data_since_last_record(stock_num, base_path='./data/'):
             start=start_date.strftime('%Y-%m-%d %H:%M:%S'),
             end=end_date.strftime('%Y-%m-%d %H:%M:%S'),
             interval='5m',
-            missing_index='drop'
+            missing_index='drop',
+            tz_convert='Asia/Taipei'  # 確保下載的數據時區與 init.py 一致
         )
         new_data = yf_data.get()
 

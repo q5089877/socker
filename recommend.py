@@ -7,6 +7,11 @@ from datetime import datetime
 
 from strategy.grid import trade
 
+# 定義近期訊號的時間窗口（以資料點數量計算）
+# 台股交易時間為 4.5 小時 (270分鐘)，資料頻率為 5 分鐘。
+# 270 / 5 = 54 個資料點/天。這裡設定 27 (約半天) 為近期訊號的閾值。
+RECENT_SIGNAL_THRESHOLD_PERIODS = 27
+
 
 def recommend_stock(url: str, parameters: Dict[str, Any]) -> Tuple[bool, bool, float, float, str, str]:
     """
@@ -22,6 +27,8 @@ def recommend_stock(url: str, parameters: Dict[str, Any]) -> Tuple[bool, bool, f
         - should_sell (bool): 如果最近有賣出信號，則為 True。
         - today_close_price (float): 最後的收盤價。
         - total_gains (float): 回測的總收益。
+        - start_date (str): 數據的開始日期。
+        - end_date (str): 數據的結束日期。
 
     Raises:
         FileNotFoundError: 如果 CSV 檔案不存在。
@@ -31,6 +38,8 @@ def recommend_stock(url: str, parameters: Dict[str, Any]) -> Tuple[bool, bool, f
     # 為了處理混合時區數據並消除警告，先將所有時間戳轉換為統一的 UTC 時間，
     # 然後再轉換回 'Asia/Taipei' 時區，以確保後續處理的時區一致性。
     df.index = pd.to_datetime(df.index, utc=True).tz_convert('Asia/Taipei')
+    # 確保索引已排序，以處理分批更新附加的資料
+    df.sort_index(inplace=True)
     df.columns = map(str.lower, df.columns)
     df['open'] = pd.to_numeric(df['open'], errors='coerce')
     df['high'] = pd.to_numeric(df['high'], errors='coerce')
@@ -49,11 +58,13 @@ def recommend_stock(url: str, parameters: Dict[str, Any]) -> Tuple[bool, bool, f
     # 處理策略未產生任何買入/賣出信號的情況，避免 IndexError
     should_buy = False
     if states_buy:  # 檢查列表是否為空
-        should_buy = abs(today - states_buy[-1]) < 27
+        should_buy = abs(
+            today - states_buy[-1]) < RECENT_SIGNAL_THRESHOLD_PERIODS
 
     should_sell = False
     if states_sell:  # 檢查列表是否為空
-        should_sell = abs(today - states_sell[-1]) < 27
+        should_sell = abs(
+            today - states_sell[-1]) < RECENT_SIGNAL_THRESHOLD_PERIODS
 
     return should_buy, should_sell, today_close_price, total_gains, start_date, end_date
 

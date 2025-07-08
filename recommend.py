@@ -69,7 +69,7 @@ def recommend_stock(url: str, parameters: Dict[str, Any]) -> Tuple[bool, bool, f
     return should_buy, should_sell, today_close_price, total_gains, start_date, end_date
 
 
-def generate_report(urls: List[str], parameters: Dict[str, Any], limit: int = 10):
+def generate_report(urls: List[str], parameters: Dict[str, Any], limit: int = 15):
     """
     生成推薦股票的 HTML 報告。
 

@@ -32,8 +32,8 @@ jobs:
       - name: Pull latest changes
         run: git pull origin main
 
-      ##- name: Generate stock report
-      ## run: python recommend.py
+      - name: Generate stock report
+        run: python recommend.py
 
       - name: Commit & push report
         run: |

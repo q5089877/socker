@@ -31,8 +31,8 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    #- name: Update data
-    #  run: python update.py
+    - name: Update data
+      run: python update.py
 
     - name: Commit & Push
       env:

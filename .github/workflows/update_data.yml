@@ -41,6 +41,7 @@ jobs:
         git config user.email "q5089877@gmail.com"
         git config user.name "neil.wang"
         git add data/*.csv
-        git commit -m "chore: 更新股價資料"
-        # 只要用 origin，就會用上面 checkout 時保留下來的 GITHUB_TOKEN
+        git commit -m "chore: 更新股價資料" || echo "Nothing to commit"
+        # 先拉取並 rebase 遠端 main
+        git pull --rebase origin main
         git push origin main

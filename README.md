@@ -2,9 +2,9 @@
 
 每天更新的台股歷史資料庫，計算技術指標，回測然後推薦股票。
 
-url="https://q5089877.github.io/socker/stock_report.html"
+url="https://q5089877.github.io/socker/index.html"
 
-https://github.com/q5089877/socker/stock_report.html
+https://github.com/q5089877/socker/index.html
 
 
 ## 使用方式，以2330為例，可以換成自己需要的股票

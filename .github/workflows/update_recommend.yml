@@ -39,6 +39,6 @@ jobs:
         run: |
           git config user.email "q5089877@gmail.com"
           git config user.name "neil.wang"
-          git add index.html
+          git add stock_report.html
           git commit --allow-empty -m "chore: 定時更新recommend股價報表"
           git push origin main

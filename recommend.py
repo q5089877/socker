@@ -4,6 +4,7 @@ import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 import os
 from datetime import datetime
+import twstock
 
 from strategy.grid import trade
 
@@ -11,6 +12,8 @@ from strategy.grid import trade
 # 台股交易時間為 4.5 小時 (270分鐘)，資料頻率為 5 分鐘。
 # 270 / 5 = 54 個資料點/天。這裡設定 27 (約半天) 為近期訊號的閾值。
 RECENT_SIGNAL_THRESHOLD_PERIODS = 27
+
+codes = twstock.codes
 
 
 def recommend_stock(url: str, parameters: Dict[str, Any]) -> Tuple[bool, bool, float, float, str, str]:
@@ -69,7 +72,7 @@ def recommend_stock(url: str, parameters: Dict[str, Any]) -> Tuple[bool, bool, f
     return should_buy, should_sell, today_close_price, total_gains, start_date, end_date
 
 
-def generate_report(urls: List[str], parameters: Dict[str, Any], limit: int = 15):
+def generate_report(urls: List[str], parameters: Dict[str, Any], limit: int = 10):
     """
     生成推薦股票的 HTML 報告。
 
@@ -86,8 +89,11 @@ def generate_report(urls: List[str], parameters: Dict[str, Any], limit: int = 15
             should_buy, should_sell, today_close_price, total_gains, start_date, end_date = recommend_stock(
                 url, parameters)
             if should_sell or should_buy:
+                stock_id = os.path.splitext(os.path.basename(url))[0]
+                stock_info = codes.get(stock_id)
+                stock_name = stock_info.name if stock_info else ""
                 results.append({
-                    "Stock": os.path.splitext(os.path.basename(url))[0],
+                    "Stock": f"{stock_id} {stock_name}".strip(),
                     "Should_Buy": should_buy,
                     "Should_Sell": should_sell,
                     "Recommended_Price": today_close_price,
@@ -127,7 +133,8 @@ def generate_report(urls: List[str], parameters: Dict[str, Any], limit: int = 15
     html_output = template.render(
         stocks=df.to_dict(orient='records'),
         strategy_params=strategy_params,
-        backtest_params=backtest_params
+        backtest_params=backtest_params,
+        report_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     )
 
     output_path = os.path.join(script_dir, 'stock_report.html')
@@ -158,8 +165,10 @@ def main():
                 file_path, parameters)
             if should_sell or should_buy:
                 stock_id = os.path.splitext(os.path.basename(file_path))[0]
+                stock_info = codes.get(stock_id)
+                stock_name = stock_info.name if stock_info else ""
                 print(
-                    f"股票代號: {stock_id:<10} | 建議買入: {str(should_buy):<5} | 建議賣出: {str(should_sell):<5} | 目前價格: {today_close_price:<8.2f} | 策略收益: {total_gains:.2f}"
+                    f"股票: {stock_id} {stock_name} | 建議買入: {str(should_buy):<5} | 建議賣出: {str(should_sell):<5} | 目前價格: {today_close_price:<8.2f} | 策略收益: {total_gains:.2f}"
                 )
         except Exception as e:
             print(f"分析 {file_path} 時發生錯誤: {e}")
